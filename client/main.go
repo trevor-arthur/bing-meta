@@ -11,7 +11,7 @@ import (
 	"os"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/blackhat-go/bhg/ch-3/bing-metadata/metadata"
+	"github.com/trevor-arthur/bing-meta/metadata"
 )
 
 func handler(i int, s *goquery.Selection) {
