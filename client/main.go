@@ -42,7 +42,7 @@ func handler(i int, s *goquery.Selection) {
 	}
 
 	log.Printf(
-		"%25s %25s - %s %s\n",
+		"%21s %s - %s %s\n",
 		cp.Creator,
 		cp.LastModifiedBy,
 		ap.Application,
@@ -57,16 +57,24 @@ func main() {
 	filetype := os.Args[2]
 
 	q := fmt.Sprintf(
-		"site:%s && filetype:%s",
+		"site:%s && filetype:%s && instreamset:(url title):%s",
 		domain,
+		filetype,
 		filetype)
+
 	search := fmt.Sprintf("http://www.bing.com/search?q=%s", url.QueryEscape(q))
-	doc, err := goquery.NewDocument(search)
+	res, err := http.Get(search)
+	if err != nil {
+		return
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
 		log.Panicln(err)
 	}
+	defer res.Body.Close()
 
-	s := "html body div#b_content ol#b_results li.b_algo div.b_title h2"
+	s := "html body div#b_content ol#b_results li.b_algo h2"
 	doc.Find(s).Each(handler)
 
 }
