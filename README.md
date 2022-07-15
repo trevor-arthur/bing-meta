@@ -13,9 +13,5 @@
 
 Example:
 
-<<<<<<< HEAD
 	./bing-scraper va.gov docx
-=======
-	./bing-scraper osha.gov docx
->>>>>>> 7754b4d51e880e2dd23fb606d6c4595a9a1b6fd0
 	
