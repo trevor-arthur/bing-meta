@@ -73,8 +73,6 @@ func main() {
 		log.Panicln(err)
 	}
 	defer res.Body.Close()
-
 	s := "html body div#b_content ol#b_results li.b_algo h2"
 	doc.Find(s).Each(handler)
-
 }

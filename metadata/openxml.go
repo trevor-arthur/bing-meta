@@ -27,17 +27,16 @@ var OfficeVersions = map[string]string{
 	"11": "2003",
 }
 
-func (a *OfficeAppProperty) GetMajorVersion() string {
-	tokens := strings.Split(a.Version, ".")
-
-	if len(tokens) < 2 {
-		return "[!] Unknown"
+func process(f *zip.File, prop interface{}) error {
+	rc, err := f.Open()
+	if err != nil {
+		return err
 	}
-	v, ok := OfficeVersions[tokens[0]]
-	if !ok {
-		return "[!] Unknown"
+	defer rc.Close()
+	if err := xml.NewDecoder(rc).Decode(&prop); err != nil {
+		return err
 	}
-	return v
+	return nil
 }
 
 func NewProperties(r *zip.Reader) (*OfficeCoreProperty, *OfficeAppProperty, error) {
@@ -61,14 +60,15 @@ func NewProperties(r *zip.Reader) (*OfficeCoreProperty, *OfficeAppProperty, erro
 	return &coreProps, &appProps, nil
 }
 
-func process(f *zip.File, prop interface{}) error {
-	rc, err := f.Open()
-	if err != nil {
-		return err
-	}
+func (a *OfficeAppProperty) GetMajorVersion() string {
+	tokens := strings.Split(a.Version, ".")
 
-	if err := xml.NewDecoder(rc).Decode(&prop); err != nil {
-		return err
+	if len(tokens) < 2 {
+		return "[!] Unknown"
 	}
-	return nil
+	v, ok := OfficeVersions[tokens[0]]
+	if !ok {
+		return "[!] Unknown"
+	}
+	return v
 }
